@@ -1,0 +1,69 @@
+name: Build libmpv-android
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: write
+
+env:
+  NDK_VER: 25.1.8937393
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3.3.0
+      - name: Setup Java JDK
+        uses: actions/setup-java@v3.9.0
+        with:
+          distribution: temurin
+          java-version: 11
+      - name: Setup Flutter SDK
+        uses: subosito/flutter-action@v1
+        with:
+          channel: "stable"
+      - name: Gradle Build Action
+        uses: gradle/gradle-build-action@v2.3.3
+      - name: Cache
+        uses: actions/cache@v3.2.4
+        with:
+          path: /usr/local/lib/android/sdk/ndk/${{ env.NDK_VER }}
+          key: ${{ runner.os }}-${{ env.NDK_VER }}
+      - name: Symlink SDK
+        working-directory: ./buildscripts
+        run: |
+          mkdir sdk
+          ln -s ${ANDROID_HOME} ./sdk/android-sdk-linux
+      - name: Bundle (default)
+        working-directory: ./buildscripts
+        run: |
+          sudo chmod +x bundle_default.sh
+          ./bundle_default.sh
+      - name: Bundle (full)
+        working-directory: ./buildscripts
+        run: |
+          sudo chmod +x bundle_full.sh
+          ./bundle_full.sh
+      - name: Bundle (encoders-gpl)
+        working-directory: ./buildscripts
+        run: |
+          sudo chmod +x bundle_encoders-gpl.sh
+          ./bundle_encoders-gpl.sh
+      - uses: actions/upload-artifact@v3.1.2
+        with:
+          name: artifact
+          path: ./output/*
+      - uses: softprops/action-gh-release@v1
+        if: github.ref == 'refs/heads/main'
+        with:
+          draft: true
+          prerelease: false
+          tag_name: "vnext"
+          files: |
+            output/*
