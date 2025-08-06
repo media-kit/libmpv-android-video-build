@@ -25,7 +25,7 @@ cpuflags=
 
 ../configure \
 	--target-os=android --enable-cross-compile --cross-prefix=$ndk_triple- --ar=$AR --cc=$CC --ranlib=$RANLIB \
-	--arch=${ndk_triple%%-*} --cpu=$cpu --pkg-config=pkg-config --nm=llvm-nm \
+	--arch=${ndk_triple%%-*} --cpu=$cpu --pkg-config=pkg-config \
 	--extra-cflags="-I$prefix_dir/include $cpuflags" --extra-ldflags="-L$prefix_dir/lib" \
 	\
 	--disable-gpl \
@@ -144,17 +144,6 @@ cpuflags=
 	--enable-decoder=webvtt \
 	--enable-decoder=movtext \
 	\
-	--enable-decoder=mjpeg \
-	--enable-decoder=ljpeg \
-	--enable-decoder=jpegls \
-	--enable-decoder=jpeg2000 \
-	--enable-decoder=png \
-	--enable-decoder=gif \
-	--enable-decoder=bmp \
-	--enable-decoder=tiff \
-	--enable-decoder=webp \
-	--enable-decoder=jpegls \
-	\
 	--enable-demuxer=concat \
 	--enable-demuxer=data \
 	--enable-demuxer=flv \
@@ -202,8 +191,8 @@ cpuflags=
 	--enable-demuxer=xwma \
 	--enable-demuxer=dsf \
 	--enable-demuxer=truehd \
-	--enable-demuxer=dts \
-	--enable-demuxer=dtshd \
+        --enable-demuxer=dts \
+        --enable-demuxer=dtshd \
 	\
 	--enable-demuxer=ass \
 	--enable-demuxer=srt \
@@ -255,7 +244,6 @@ cpuflags=
 	--enable-protocol=tcp \
 	--enable-protocol=tls \
 	--enable-protocol=srt \
-	--enable-protocol=udp \
 	\
 	--enable-encoder=mjpeg \
 	--enable-encoder=ljpeg \

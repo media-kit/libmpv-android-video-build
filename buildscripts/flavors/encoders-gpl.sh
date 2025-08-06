@@ -25,7 +25,7 @@ cpuflags=
 
 ../configure \
 	--target-os=android --enable-cross-compile --cross-prefix=$ndk_triple- --ar=$AR --cc=$CC --ranlib=$RANLIB \
-	--arch=${ndk_triple%%-*} --cpu=$cpu --pkg-config=pkg-config --nm=llvm-nm \
+	--arch=${ndk_triple%%-*} --cpu=$cpu --pkg-config=pkg-config \
 	--extra-cflags="-I$prefix_dir/include $cpuflags" --extra-ldflags="-L$prefix_dir/lib" \
 	--pkg-config-flags="--static" \
 	\
@@ -87,6 +87,8 @@ cpuflags=
 	--enable-swscale \
 	--enable-swresample \
 	\
+	\
+	\
 	--enable-filters \
 	\
 	--enable-protocol=async \
@@ -110,7 +112,6 @@ cpuflags=
 	--enable-protocol=tcp \
 	--enable-protocol=tls \
 	--enable-protocol=srt \
-	--enable-protocol=udp \
 	\
 	--enable-network \
 
