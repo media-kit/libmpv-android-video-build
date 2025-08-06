@@ -12,12 +12,12 @@ if [ "$os" == "linux" ]; then
 		hash yum &>/dev/null && {
 			sudo yum install autoconf pkgconfig libtool ninja-build unzip \
 			python3-pip python3-setuptools unzip wget;
-			python3 -m pip install meson jsonschema jinja2; }
+			sudo pip3 install meson; }
 		apt-get -v &>/dev/null && {
 		    sudo apt-get update;
 			sudo apt-get install -y autoconf pkg-config libtool ninja-build nasm unzip \
 			python3-pip python3-setuptools unzip;
-			python3 -m pip install meson jsonschema jinja2; }
+			sudo pip3 install meson; }
 	fi
 
 	if ! javac -version &>/dev/null; then
@@ -61,10 +61,10 @@ sdkmanager () {
 	"$exe" --sdk_root="${ANDROID_HOME}" "$@"
 }
 echo y | sdkmanager \
-	"platforms;android-35" \
+	"platforms;android-33" \
 	"build-tools;${v_sdk_build_tools}" \
 	"ndk;${v_ndk}" \
-	"cmake;3.30.3"
+	"cmake;3.22.1"
 
 # gas-preprocessor
 mkdir -p bin

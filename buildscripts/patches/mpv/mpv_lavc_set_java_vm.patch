@@ -1,8 +1,8 @@
 diff --git a/libmpv/client.h b/libmpv/client.h
-index 8eb5e05a04..51e490d9e7 100644
+index fb10e5e..afbc952 100644
 --- a/libmpv/client.h
 +++ b/libmpv/client.h
-@@ -1730,6 +1730,15 @@ MPV_EXPORT mpv_event *mpv_wait_event(mpv_handle *ctx, double timeout);
+@@ -1707,6 +1707,15 @@ MPV_EXPORT mpv_event *mpv_wait_event(mpv_handle *ctx, double timeout);
   */
  MPV_EXPORT void mpv_wakeup(mpv_handle *ctx);
  
@@ -18,21 +18,21 @@ index 8eb5e05a04..51e490d9e7 100644
  /**
   * Set a custom function that should be called when there are new events. Use
   * this if blocking in mpv_wait_event() to wait for new events is not feasible.
-diff --git a/player/client.c b/player/client.c
-index b5112d1490..b9e1ea8e3c 100644
+diff --git a/libmpv/mpv.def b/libmpv/mpv.def
+index 232490d..d7a2842 100644
 --- a/player/client.c
 +++ b/player/client.c
 @@ -22,6 +22,8 @@
- #include <stdint.h>
- #include <stdlib.h>
+ #include <math.h>
+ #include <assert.h>
  
 +#include <libavcodec/jni.h>
 +
  #include "common/common.h"
  #include "common/global.h"
  #include "common/msg.h"
-@@ -964,6 +966,10 @@ void mpv_wakeup(mpv_handle *ctx)
-     mp_mutex_unlock(&ctx->lock);
+@@ -967,6 +969,10 @@ void mpv_wakeup(mpv_handle *ctx)
+     pthread_mutex_unlock(&ctx->lock);
  }
  
 +int mpv_lavc_set_java_vm(void *vm) {
