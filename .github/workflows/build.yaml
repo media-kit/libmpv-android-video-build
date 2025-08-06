@@ -42,11 +42,6 @@ jobs:
         run: |
           sudo chmod +x bundle_full.sh
           ./bundle_full.sh
-      - name: Bundle (encoders-gpl)
-        working-directory: ./buildscripts
-        run: |
-          sudo chmod +x bundle_encoders-gpl.sh
-          ./bundle_encoders-gpl.sh
       - uses: actions/upload-artifact@v4
         with:
           name: artifact
