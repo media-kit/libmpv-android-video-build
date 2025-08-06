@@ -52,7 +52,6 @@ loadarch () {
 		export AS="nasm"
 	fi
 	export CXX=$cc_triple-clang++
-	export LDFLAGS="-Wl,-O1,--icf=safe -Wl,-z,max-page-size=16384"
 	export AR=llvm-ar
 	export RANLIB=llvm-ranlib
 }
@@ -82,10 +81,9 @@ wrap_mode = 'nodownload'
 [binaries]
 c = '$CC'
 cpp = '$CXX'
-ar = 'llvm-ar'
-nm = 'llvm-nm'
-strip = 'llvm-strip'
-pkg-config = 'pkg-config'
+ar = '$AR'
+strip = '$ndk_triple-strip'
+pkgconfig = 'pkg-config'
 [host_machine]
 system = 'android'
 cpu_family = '$cpu_family'

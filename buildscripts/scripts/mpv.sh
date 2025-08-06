@@ -8,7 +8,7 @@ build=_build$ndk_suffix
 if [ "$1" == "build" ]; then
 	true
 elif [ "$1" == "clean" ]; then
-	rm -rf $build
+	rm -rf _build$ndk_suffix
 	exit 0
 else
 	exit 255
@@ -21,10 +21,11 @@ meson setup $build --cross-file "$prefix_dir"/crossfile.txt \
 	--default-library shared \
 	-Dgpl=false \
 	-Dlibmpv=true \
- 	-Dcplayer=false \
  	-Dlua=disabled \
+ 	-Dcplayer=false \
 	-Diconv=disabled \
-	-Djavascript=disabled \
+	-Dvulkan=disabled \
+   	-Dlibplacebo=disabled \
  	-Dmanpage-build=disabled
 
 ninja -C $build -j$cores
