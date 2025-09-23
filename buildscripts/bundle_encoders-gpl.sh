@@ -1,22 +1,21 @@
 # --------------------------------------------------
-set -euxo pipefail
 
-export ENCODERS_GPL=1
-
-if [ -d deps ]; then
+if [ ! -f "deps" ]; then
   sudo rm -r deps
 fi
-if [ -d prefix ]; then
+if [ ! -f "prefix" ]; then
   sudo rm -r prefix
 fi
 
 ./download.sh
-./patch-encoders-gpl.sh
+./patch.sh
 
 # --------------------------------------------------
 
-rm scripts/ffmpeg.sh
-cp flavors/encoders-gpl.sh scripts/ffmpeg.sh
+if [ ! -f "scripts/ffmpeg" ]; then
+  rm scripts/ffmpeg.sh
+fi
+cp flavors/default.sh scripts/ffmpeg.sh
 
 # --------------------------------------------------
 
@@ -31,55 +30,45 @@ sudo chmod +x gradlew
 
 unzip -o app/build/outputs/apk/release/app-release.apk -d app/build/outputs/apk/release
 
-ln -sf "$(pwd)/app/build/outputs/apk/release/lib/arm64-v8a/libmediakitandroidhelper.so" "../../../libmpv/src/main/jniLibs/arm64-v8a"
-ln -sf "$(pwd)/app/build/outputs/apk/release/lib/armeabi-v7a/libmediakitandroidhelper.so" "../../../libmpv/src/main/jniLibs/armeabi-v7a"
-ln -sf "$(pwd)/app/build/outputs/apk/release/lib/x86/libmediakitandroidhelper.so" "../../../libmpv/src/main/jniLibs/x86"
-ln -sf "$(pwd)/app/build/outputs/apk/release/lib/x86_64/libmediakitandroidhelper.so" "../../../libmpv/src/main/jniLibs/x86_64"
+cp app/build/outputs/apk/release/lib/arm64-v8a/libmediakitandroidhelper.so      ../../prefix/arm64-v8a/usr/local/lib
+cp app/build/outputs/apk/release/lib/armeabi-v7a/libmediakitandroidhelper.so    ../../prefix/armeabi-v7a/usr/local/lib
+cp app/build/outputs/apk/release/lib/x86/libmediakitandroidhelper.so            ../../prefix/x86/usr/local/lib
+cp app/build/outputs/apk/release/lib/x86_64/libmediakitandroidhelper.so         ../../prefix/x86_64/usr/local/lib
 
 cd ../..
 
-# --------------------------------------------------
+mkdir -p temp/lib/arm64-v8a
+mkdir -p temp/lib/armeabi-v7a
+mkdir -p temp/lib/x86
+mkdir -p temp/lib/x86_64
 
-cd deps/media_kit/media_kit_native_event_loop
+cp prefix/arm64-v8a/usr/local/lib/*.so temp/lib/arm64-v8a/
+cp prefix/armeabi-v7a/usr/local/lib/*.so temp/lib/armeabi-v7a/
+cp prefix/x86/usr/local/lib/*.so temp/lib/x86/
+cp prefix/x86_64/usr/local/lib/*.so temp/lib/x86_64/
 
-flutter create --org com.alexmercerind --template plugin_ffi --platforms=android .
+cd temp
 
-if ! grep -q android "pubspec.yaml"; then
-  printf "      android:\n        ffiPlugin: true\n" >> pubspec.yaml
-fi
+FIXED_TIME="2025-01-01 00:00:00"
 
-flutter pub get
+find "lib" -type d -exec touch -d "$FIXED_TIME" {} +
+find "lib/arm64-v8a" -type f -name "*.so" -exec touch -d "$FIXED_TIME" {} +
+find "lib/armeabi-v7a" -type f -name "*.so" -exec touch -d "$FIXED_TIME" {} +
+find "lib/x86" -type f -name "*.so" -exec touch -d "$FIXED_TIME" {} +
+find "lib/x86_64" -type f -name "*.so" -exec touch -d "$FIXED_TIME" {} +
 
-cp -a ../../mpv/libmpv/. src/include/
+md5sum lib/arm64-v8a/*.so
+md5sum lib/armeabi-v7a/*.so
+md5sum lib/x86/*.so
+md5sum lib/x86_64/*.so
 
-cd example
+find lib/arm64-v8a -type f | sort | zip -r -X ../encoders-gpl-arm64-v8a.jar -@
+find lib/armeabi-v7a -type f | sort | zip -r -X ../encoders-gpl-armeabi-v7a.jar -@
+find lib/x86 -type f | sort | zip -r -X ../encoders-gpl-x86.jar -@
+find lib/x86_64 -type f | sort | zip -r -X ../encoders-gpl-x86_64.jar -@
 
-flutter clean
-flutter build apk --release
+cd ../
 
-unzip -o build/app/outputs/apk/release/app-release.apk -d build/app/outputs/apk/release
-
-cd build/app/outputs/apk/release/
-
-# --------------------------------------------------
-
-rm -r lib/*/libapp.so
-rm -r lib/*/libflutter.so
-
-zip -r "encoders-gpl-arm64-v8a.jar"                lib/arm64-v8a
-zip -r "encoders-gpl-armeabi-v7a.jar"              lib/armeabi-v7a
-zip -r "encoders-gpl-x86.jar"                      lib/x86
-zip -r "encoders-gpl-x86_64.jar"                   lib/x86_64
-
-mkdir -p ../../../../../../../../../../output
-
-cp *.jar ../../../../../../../../../../output
+pwd
 
 md5sum *.jar
-
-cd ../../../../../../../../..
-
-# --------------------------------------------------
-
-zip -r debug-symbols-encoders-gpl.zip prefix/*/lib
-cp debug-symbols-encoders-gpl.zip ../output
