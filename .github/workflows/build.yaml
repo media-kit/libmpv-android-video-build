@@ -5,6 +5,12 @@ on:
     branches:
       - main
   pull_request:
+  workflow_dispatch:
+    inputs:
+      logLevel:
+        description: 'Log level'
+        required: true
+        default: 'warning'
 
 permissions:
   contents: write
@@ -49,7 +55,7 @@ jobs:
       - uses: actions/upload-artifact@v4
         with:
           name: artifact
-          path: ./output/*
+          path: /home/runner/work/libmpv-android-video-build/libmpv-android-video-build/buildscripts/*.jar
       - uses: softprops/action-gh-release@v1
         if: github.ref == 'refs/heads/main'
         with:
@@ -57,4 +63,4 @@ jobs:
           prerelease: false
           tag_name: "vnext"
           files: |
-            output/*
+            /home/runner/work/libmpv-android-video-build/libmpv-android-video-build/buildscripts/*.jar
