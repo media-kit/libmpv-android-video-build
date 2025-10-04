@@ -42,25 +42,31 @@ jobs:
         run: |
           sudo chmod +x bundle_default.sh
           ./bundle_default.sh
-      - name: Bundle (full)
-        working-directory: ./buildscripts
-        run: |
-          sudo chmod +x bundle_full.sh
-          ./bundle_full.sh
-      - name: Bundle (encoders-gpl)
-        working-directory: ./buildscripts
-        run: |
-          sudo chmod +x bundle_encoders-gpl.sh
-          ./bundle_encoders-gpl.sh
-      - uses: actions/upload-artifact@v4
+      # TODO(alexmercerind): Figure out this shit.
+      # - name: Bundle (full)
+      #   working-directory: ./buildscripts
+      #   run: |
+      #     sudo chmod +x bundle_full.sh
+      #     ./bundle_full.sh
+      # - name: Bundle (encoders-gpl)
+      #   working-directory: ./buildscripts
+      #   run: |
+      #     sudo chmod +x bundle_encoders-gpl.sh
+      #     ./bundle_encoders-gpl.sh
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: artifact
-          path: /home/runner/work/libmpv-android-video-build/libmpv-android-video-build/buildscripts/*.jar
-      - uses: softprops/action-gh-release@v1
+          path: |
+            ./buildscripts/*.jar
+            ./buildscripts/deps/media-kit-android-helper/app/build/outputs/apk/release/*.jar
+      - name: Upload Release
+        uses: softprops/action-gh-release@v1
         if: github.ref == 'refs/heads/main'
         with:
           draft: true
           prerelease: false
           tag_name: "vnext"
           files: |
-            /home/runner/work/libmpv-android-video-build/libmpv-android-video-build/buildscripts/*.jar
+            buildscripts/*.zip
+            buildscripts/deps/media-kit-android-helper/app/build/outputs/apk/release/*.jar

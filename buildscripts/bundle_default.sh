@@ -21,13 +21,12 @@ cp flavors/default.sh scripts/ffmpeg.sh
 
 ./build.sh
 
-# --------------------------------------------------
+zip -r debug-symbols-default.zip prefix/*/lib
 
-# Strip debug symbols from all .so files
-llvm-strip --strip-all prefix/arm64-v8a/usr/local/lib/*.so
-llvm-strip --strip-all prefix/armeabi-v7a/usr/local/lib/*.so
-llvm-strip --strip-all prefix/x86/usr/local/lib/*.so
-llvm-strip --strip-all prefix/x86_64/usr/local/lib/*.so
+./sdk/android-sdk-linux/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-all prefix/arm64-v8a/usr/local/lib/libmpv.so
+./sdk/android-sdk-linux/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-all prefix/armeabi-v7a/usr/local/lib/libmpv.so
+./sdk/android-sdk-linux/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-all prefix/x86/usr/local/lib/libmpv.so
+./sdk/android-sdk-linux/ndk/27.1.12297006/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-all prefix/x86_64/usr/local/lib/libmpv.so
 
 # --------------------------------------------------
 
@@ -38,45 +37,16 @@ sudo chmod +x gradlew
 
 unzip -o app/build/outputs/apk/release/app-release.apk -d app/build/outputs/apk/release
 
-cp app/build/outputs/apk/release/lib/arm64-v8a/libmediakitandroidhelper.so      ../../prefix/arm64-v8a/usr/local/lib
-cp app/build/outputs/apk/release/lib/armeabi-v7a/libmediakitandroidhelper.so    ../../prefix/armeabi-v7a/usr/local/lib
-cp app/build/outputs/apk/release/lib/x86/libmediakitandroidhelper.so            ../../prefix/x86/usr/local/lib
-cp app/build/outputs/apk/release/lib/x86_64/libmediakitandroidhelper.so         ../../prefix/x86_64/usr/local/lib
+cp ../../prefix/arm64-v8a/usr/local/lib/libmpv.so      app/build/outputs/apk/release/lib/arm64-v8a
+cp ../../prefix/armeabi-v7a/usr/local/lib/libmpv.so    app/build/outputs/apk/release/lib/armeabi-v7a
+cp ../../prefix/x86/usr/local/lib/libmpv.so            app/build/outputs/apk/release/lib/x86
+cp ../../prefix/x86_64/usr/local/lib/libmpv.so         app/build/outputs/apk/release/lib/x86_64
 
-cd ../..
+cd app/build/outputs/apk/release
 
-mkdir -p temp/lib/arm64-v8a
-mkdir -p temp/lib/armeabi-v7a
-mkdir -p temp/lib/x86
-mkdir -p temp/lib/x86_64
-
-cp prefix/arm64-v8a/usr/local/lib/*.so temp/lib/arm64-v8a/
-cp prefix/armeabi-v7a/usr/local/lib/*.so temp/lib/armeabi-v7a/
-cp prefix/x86/usr/local/lib/*.so temp/lib/x86/
-cp prefix/x86_64/usr/local/lib/*.so temp/lib/x86_64/
-
-cd temp
-
-FIXED_TIME="2025-01-01 00:00:00"
-
-find "lib" -type d -exec touch -d "$FIXED_TIME" {} +
-find "lib/arm64-v8a" -type f -name "*.so" -exec touch -d "$FIXED_TIME" {} +
-find "lib/armeabi-v7a" -type f -name "*.so" -exec touch -d "$FIXED_TIME" {} +
-find "lib/x86" -type f -name "*.so" -exec touch -d "$FIXED_TIME" {} +
-find "lib/x86_64" -type f -name "*.so" -exec touch -d "$FIXED_TIME" {} +
-
-md5sum lib/arm64-v8a/*.so
-md5sum lib/armeabi-v7a/*.so
-md5sum lib/x86/*.so
-md5sum lib/x86_64/*.so
-
-find lib/arm64-v8a -type f | sort | zip -r -X ../default-arm64-v8a.jar -@
-find lib/armeabi-v7a -type f | sort | zip -r -X ../default-armeabi-v7a.jar -@
-find lib/x86 -type f | sort | zip -r -X ../default-x86.jar -@
-find lib/x86_64 -type f | sort | zip -r -X ../default-x86_64.jar -@
-
-cd ../
-
-pwd
+zip -r default-arm64-v8a.jar      lib/arm64-v8a/*.so
+zip -r default-armeabi-v7a.jar    lib/armeabi-v7a/*.so
+zip -r default-x86.jar            lib/x86/*.so
+zip -r default-x86_64.jar         lib/x86_64/*.so
 
 md5sum *.jar
