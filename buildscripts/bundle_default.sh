@@ -23,6 +23,14 @@ cp flavors/default.sh scripts/ffmpeg.sh
 
 # --------------------------------------------------
 
+# Strip debug symbols from all .so files
+llvm-strip --strip-all prefix/arm64-v8a/usr/local/lib/*.so
+llvm-strip --strip-all prefix/armeabi-v7a/usr/local/lib/*.so
+llvm-strip --strip-all prefix/x86/usr/local/lib/*.so
+llvm-strip --strip-all prefix/x86_64/usr/local/lib/*.so
+
+# --------------------------------------------------
+
 cd deps/media-kit-android-helper
 
 sudo chmod +x gradlew

@@ -15,11 +15,19 @@ fi
 if [ ! -f "scripts/ffmpeg" ]; then
   rm scripts/ffmpeg.sh
 fi
-cp flavors/default.sh scripts/ffmpeg.sh
+cp flavors/encoders-gpl.sh scripts/ffmpeg.sh
 
 # --------------------------------------------------
 
 ./build.sh
+
+# --------------------------------------------------
+
+# Strip debug symbols from all .so files
+llvm-strip --strip-all prefix/arm64-v8a/usr/local/lib/*.so
+llvm-strip --strip-all prefix/armeabi-v7a/usr/local/lib/*.so
+llvm-strip --strip-all prefix/x86/usr/local/lib/*.so
+llvm-strip --strip-all prefix/x86_64/usr/local/lib/*.so
 
 # --------------------------------------------------
 
