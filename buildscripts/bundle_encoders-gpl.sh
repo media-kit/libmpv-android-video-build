@@ -50,3 +50,8 @@ zip -r encoders-gpl-x86.jar            lib/x86/*.so
 zip -r encoders-gpl-x86_64.jar         lib/x86_64/*.so
 
 md5sum *.jar
+
+cd ../../../../../../..
+
+mkdir -p artifacts/encoders-gpl
+cp deps/media-kit-android-helper/app/build/outputs/apk/release/encoders-gpl-*.jar artifacts/encoders-gpl/

@@ -50,3 +50,8 @@ zip -r full-x86.jar            lib/x86/*.so
 zip -r full-x86_64.jar         lib/x86_64/*.so
 
 md5sum *.jar
+
+cd ../../../../../../..
+
+mkdir -p artifacts/full
+cp deps/media-kit-android-helper/app/build/outputs/apk/release/full-*.jar artifacts/full/
