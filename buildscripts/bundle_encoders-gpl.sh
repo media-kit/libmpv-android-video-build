@@ -7,6 +7,8 @@ if [ ! -f "prefix" ]; then
   sudo rm -r prefix
 fi
 
+export ENCODERS_GPL=1
+
 ./download.sh
 ./patch.sh
 
