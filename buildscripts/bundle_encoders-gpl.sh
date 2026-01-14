@@ -1,20 +1,21 @@
 # --------------------------------------------------
+set -euxo pipefail
 
-if [ ! -f "deps" ]; then
+if [ -d "deps" ]; then
   sudo rm -r deps
 fi
-if [ ! -f "prefix" ]; then
+if [ -d "prefix" ]; then
   sudo rm -r prefix
 fi
 
 export ENCODERS_GPL=1
 
 ./download.sh
-./patch.sh
+./patch-encoders-gpl.sh
 
 # --------------------------------------------------
 
-if [ ! -f "scripts/ffmpeg" ]; then
+if [ -f "scripts/ffmpeg" ]; then
   rm scripts/ffmpeg.sh
 fi
 cp flavors/encoders-gpl.sh scripts/ffmpeg.sh
@@ -25,10 +26,11 @@ cp flavors/encoders-gpl.sh scripts/ffmpeg.sh
 
 zip -r debug-symbols-encoders-gpl.zip prefix/*/lib
 
-./sdk/android-sdk-linux/ndk/27.3.13750724/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-all prefix/arm64-v8a/usr/local/lib/libmpv.so
-./sdk/android-sdk-linux/ndk/27.3.13750724/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-all prefix/armeabi-v7a/usr/local/lib/libmpv.so
-./sdk/android-sdk-linux/ndk/27.3.13750724/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-all prefix/x86/usr/local/lib/libmpv.so
-./sdk/android-sdk-linux/ndk/27.3.13750724/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-all prefix/x86_64/usr/local/lib/libmpv.so
+. ./include/depinfo.sh
+./sdk/android-sdk-linux/ndk/$v_ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-all prefix/arm64-v8a/usr/local/lib/libmpv.so
+./sdk/android-sdk-linux/ndk/$v_ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-all prefix/armeabi-v7a/usr/local/lib/libmpv.so
+./sdk/android-sdk-linux/ndk/$v_ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-all prefix/x86/usr/local/lib/libmpv.so
+./sdk/android-sdk-linux/ndk/$v_ndk/toolchains/llvm/prebuilt/linux-x86_64/bin/llvm-strip --strip-all prefix/x86_64/usr/local/lib/libmpv.so
 
 # --------------------------------------------------
 
