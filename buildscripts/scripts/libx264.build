@@ -19,6 +19,9 @@ endif
 
 p = mod.add_project('configure',
     configure_options : configure_options,
+    cross_configure_options : [
+        '--host=@0@-linux-@1@'.format(host_machine.cpu_family(), host_machine.system())
+    ],
     verbose: true
 )
 

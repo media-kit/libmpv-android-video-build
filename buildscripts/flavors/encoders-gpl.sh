@@ -24,7 +24,7 @@ cpuflags=
 [[ "$ndk_triple" == "arm"* ]] && cpuflags="$cpuflags -mfpu=neon -mcpu=cortex-a8"
 
 ../configure \
-	--target-os=android --enable-cross-compile --cross-prefix=$ndk_triple- --ar=$AR --cc=$CC --ranlib=$RANLIB \
+	--target-os=android --enable-cross-compile --cross-prefix=$ndk_triple- --ar=$AR --cc=$CC --nm=llvm-nm --ranlib=$RANLIB \
 	--arch=${ndk_triple%%-*} --cpu=$cpu --pkg-config=pkg-config \
 	--extra-cflags="-I$prefix_dir/include $cpuflags" --extra-ldflags="-L$prefix_dir/lib" \
 	--pkg-config-flags="--static" \
@@ -40,8 +40,6 @@ cpuflags=
 	\
 	--enable-decoders \
 	--enable-encoders \
-	--enable-libvorbis \
-	--enable-libvpx \
 	--enable-gpl \
 	--enable-libx264 \
 	--enable-muxers \

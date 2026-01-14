@@ -10,6 +10,9 @@ p = mod.add_project('configure',
         '--disable-shared',
         '--enable-static',
     ],
+    cross_configure_options : [
+        '--host=@0@-linux-@1@'.format(host_machine.cpu_family(), host_machine.system())
+    ],
     verbose: true,
 )
 

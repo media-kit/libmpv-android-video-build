@@ -20,7 +20,9 @@ unset CC CXX # meson wants these unset
 
 mkdir $build
 
-meson setup $build --cross-file "$prefix_dir"/crossfile.txt --prefix="$prefix_dir"
+# Stripping breaks the asm ELF metadata within libx264.a
+# We strip at the end anyway
+STRIP="" meson setup $build --cross-file "$prefix_dir"/crossfile.txt --prefix="$prefix_dir"
 
 meson compile -C $build libx264
 meson install -C $build
