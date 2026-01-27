@@ -40,6 +40,8 @@ cpuflags=
 	\
 	--enable-decoders \
 	--enable-encoders \
+	--enable-libvorbis \
+	--enable-libvpx \
 	--enable-gpl \
 	--enable-libx264 \
 	--enable-muxers \
